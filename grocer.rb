@@ -1,30 +1,25 @@
 require "pry"
 def consolidate_cart(cart)
-  count = 0
-  my_hash = {}
-  comparisons_array = []
-  cart.each do |object|
-    object.each do |veggie, attributes|
-      object[veggie][:count] = 0
-      comparisons_array.push(veggie)
-    end
-  end
-  cart.each do |object|
-    object.each do |veggie, attribute|
-      counter = 0
-      comparisons_array.each_index do |index|
-        if comparisons_array[index] == veggie
-          counter += 1
-          end
-        end
-        object[veggie][:count] = counter
+    my_hash = {}
+    counter = 1
+    cart.each do |items|
+      items.each do |key_value,specifics|
       end
     end
-  cart.each do |object|
-    object.each do |key1, value1|
-      my_hash[key1] = value1
+    cart.each do |cart_items|
+      cart_items.each do |veggie,specifics|
+        my_hash[veggie] = {}
+        my_hash[veggie][:price] = cart_items[veggie][:price]
+        my_hash[veggie][:clearance] = cart_items[veggie][:clearance]
+        if !my_hash[veggie][:count]
+
+          my_hash[veggie][:count] = counter
+        else
+          counter += 1
+          my_hash[veggie][:count] = counter
+        end
+      end
     end
-  end
   return my_hash
 end
 
@@ -45,24 +40,24 @@ def apply_coupons(cart, coupons)
     end
   end
   coupons.each do |coupon|
-    coupon.each do |variables, particulars|
-      cart.each do |veggie, specifics|
-      if veggie == coupon[:item]
-        if my_hash["#{veggie} W/COUPON"] == {}
-          counter = counter + 1
-          my_hash["#{veggie} W/COUPON"][:count] = counter
-        else
-        my_hash["#{veggie} W/COUPON"] = {}
-        my_hash["#{veggie} W/COUPON"][:price] = coupon[:cost]
-        my_hash["#{veggie} W/COUPON"][:clearance] = cart[veggie][:clearance]
-        my_hash["#{veggie} W/COUPON"][:count] = counter
+  #  coupon.each do |variables, particulars|
+        #binding.pry
+        if cart[coupon[:item]]
+          if my_hash["#{coupon[:item]} W/COUPON"]
+            counter += 1
+            my_hash["#{coupon[:item]} W/COUPON"][:count] = counter
+          else
+            my_hash["#{coupon[:item]} W/COUPON"] = {}
+            my_hash["#{coupon[:item]} W/COUPON"][:price] = coupon[:cost]
+            my_hash["#{coupon[:item]} W/COUPON"][:clearance] = cart[coupon[:item]][:clearance]
+            my_hash["#{coupon[:item]} W/COUPON"][:count] = counter
 
-        my_hash[veggie][:count] = cart[veggie][:count] % coupon[:num]
-      end
+            my_hash[coupon[:item]][:count] = cart[coupon[:item]][:count] % coupon[:num]
+          end
         end
       end
-    end
-  end
+    #end
+
   return my_hash
 end
 
@@ -78,6 +73,7 @@ def checkout(cart,coupons)
 
   counter = 0
   cart = consolidate_cart(cart)
+  puts "#{cart}"
   cart = apply_coupons(cart,coupons)
   cart = apply_clearance(cart)
   cart.each do |key, variable|
