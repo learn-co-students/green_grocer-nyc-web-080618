@@ -1,4 +1,6 @@
 describe "Grocer" do
+
+
   let(:items) do
     [
       {"AVOCADO" => {:price => 3.00, :clearance => true}},
@@ -22,7 +24,7 @@ describe "Grocer" do
     ]
   end
 
-  describe "#consolidate_cart" do
+ describe "#consolidate_cart" do
     it "adds a count of one to each item when there are no duplicates" do
       cart = [find_item('TEMPEH'), find_item('PEANUTBUTTER'), find_item('ALMONDS')]
       result = consolidate_cart(cart)
@@ -77,7 +79,6 @@ describe "Grocer" do
       it "remembers if the item was on clearance" do
         expect(@avocado_result["AVOCADO W/COUPON"][:clearance]).to eq(true)
       end
-
     end
 
     context "more advanced cases:" do
@@ -151,6 +152,7 @@ describe "Grocer" do
       end
     end
   end
+
 
   describe "#apply_clearance" do
     it "takes 20% off price if the item is on clearance" do
@@ -315,4 +317,6 @@ describe "Grocer" do
       end
     end
   end
+
+
 end

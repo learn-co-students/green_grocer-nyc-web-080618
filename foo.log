@@ -1,0 +1,66 @@
+
+Grocer
+  #consolidate_cart
+    adds a count of one to each item when there are no duplicates
+    increments count when there are multiple items
+  #apply_coupons
+    base case - with perfect coupon (number of items identical):
+{"AVOCADO"=>{:price=>3.0, :clearance=>true, :count=>2}} - [{:item=>"AVOCADO", :num=>2, :cost=>5.0}]
+      adds a new key, value pair to the cart hash called 'ITEM NAME W/COUPON'
+{"AVOCADO"=>{:price=>3.0, :clearance=>true, :count=>2}} - [{:item=>"AVOCADO", :num=>2, :cost=>5.0}]
+      adds the coupon price to the property hash of couponed item
+{"AVOCADO"=>{:price=>3.0, :clearance=>true, :count=>2}} - [{:item=>"AVOCADO", :num=>2, :cost=>5.0}]
+      adds the count number to the property hash of couponed item
+{"AVOCADO"=>{:price=>3.0, :clearance=>true, :count=>2}} - [{:item=>"AVOCADO", :num=>2, :cost=>5.0}]
+      removes the number of discounted items from the original item's count
+{"AVOCADO"=>{:price=>3.0, :clearance=>true, :count=>2}} - [{:item=>"AVOCADO", :num=>2, :cost=>5.0}]
+      remembers if the item was on clearance
+    more advanced cases:
+{"CHEESE"=>{:price=>6.5, :clearance=>false, :count=>5}} - [{:item=>"CHEESE", :num=>3, :cost=>15.0}]
+      accounts for when there are more items than the coupon allows
+      doesn't break if the coupon doesn't apply to any items (FAILED - 1)
+{"CHEESE"=>{:price=>6.5, :clearance=>false, :count=>4}, "AVOCADO"=>{:price=>3.0, :clearance=>true, :count=>3}} - [{:item=>"AVOCADO", :num=>2, :cost=>5.0}, {:item=>"CHEESE", :num=>3, :cost=>15.0}]
+      can apply multiple coupons (FAILED - 2)
+{"CHEESE"=>{:price=>6.5, :clearance=>false, :count=>2}} - []
+      doesn't break if there is no coupon
+{"AVOCADO"=>{:price=>3.0, :clearance=>true, :count=>5}} - [{:item=>"AVOCADO", :num=>2, :cost=>5.0}, {:item=>"AVOCADO", :num=>2, :cost=>5.0}]
+      can increment coupon count if two are applied (FAILED - 3)
+
+Failures:
+
+  1) Grocer #apply_coupons more advanced cases: doesn't break if the coupon doesn't apply to any items
+     Failure/Error: consolidated_cart = consolidate_cart(cart)
+
+     NameError:
+       undefined local variable or method `cart' for #<RSpec::ExampleGroups::Grocer::ApplyCoupons::MoreAdvancedCases:0x00000001be6508>
+     # ./spec/grocer_spec.rb:102:in `block (4 levels) in <top (required)>'
+
+  2) Grocer #apply_coupons more advanced cases: can apply multiple coupons
+     Failure/Error: ["AVOCADO", "CHEESE"].each { |item| expect(multiple_coupons[item][:count]).to eq(1) }
+
+       expected: 1
+            got: -2
+
+       (compared using ==)
+     # ./spec/grocer_spec.rb:123:in `block (5 levels) in <top (required)>'
+     # ./spec/grocer_spec.rb:123:in `each'
+     # ./spec/grocer_spec.rb:123:in `block (4 levels) in <top (required)>'
+
+  3) Grocer #apply_coupons more advanced cases: can increment coupon count if two are applied
+     Failure/Error: expect(two_coupon_result["AVOCADO W/COUPON"][:count]).to eq(2)
+
+       expected: 2
+            got: 1
+
+       (compared using ==)
+     # ./spec/grocer_spec.rb:151:in `block (4 levels) in <top (required)>'
+
+Finished in 0.01632 seconds (files took 0.46201 seconds to load)
+12 examples, 3 failures
+
+Failed examples:
+
+rspec ./spec/grocer_spec.rb:100 # Grocer #apply_coupons more advanced cases: doesn't break if the coupon doesn't apply to any items
+rspec ./spec/grocer_spec.rb:113 # Grocer #apply_coupons more advanced cases: can apply multiple coupons
+rspec ./spec/grocer_spec.rb:143 # Grocer #apply_coupons more advanced cases: can increment coupon count if two are applied
+
