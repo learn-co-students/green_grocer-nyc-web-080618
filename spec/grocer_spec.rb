@@ -134,6 +134,7 @@ describe "Grocer" do
         cheese = items.find { |item| item['CHEESE'] }
         cart = [cheese, cheese]
         consolidated_cart = consolidate_cart(cart)
+
         no_coupon_result = apply_coupons(consolidated_cart, [])
         expect(no_coupon_result["CHEESE"][:price]).to eq(6.50)
         expect(no_coupon_result["CHEESE"][:count]).to eq(2)
